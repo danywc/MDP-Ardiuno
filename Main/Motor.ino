@@ -341,7 +341,7 @@ void caliFlat()
   double ir1Distance = getMedianA1();
   double ir2Distance = getMedianA4();
   double ir3Distance = getMedianA3();
-  double diffLeft = (ir3Distance-offset1) - desiredDistanceSensor;
+  double diffLeft = (ir3Distance-offset1) - desiredDistanceSensor; //dDs = 8.8
   double diffRight = (ir2Distance+offset3) - desiredDistanceSensor; 
   
   while(ir2Distance-offset2 > desiredDistanceSensor || ir3Distance-offset3 > desiredDistanceSensor){ //may need the ir number
@@ -381,7 +381,7 @@ void caliRight2()
   double diffRight = (ir1Distance+offset1) - desiredDistanceSensorCaliRight2;
   double diffLeft = (ir3Distance-offset3) - desiredDistanceSensorCaliRight2;
   
-  while(ir1Distance-offset1 > desiredDistanceSensor ||  ir3Distance-offset3 > desiredDistanceSensor){
+  while(ir1Distance-offset1 > desiredDistanceSensorCaliRight2 ||  ir3Distance-offset3 > desiredDistanceSensorCaliRight2){ //desiredDistanceSensorCaliRight2 = 8.5
     
     if (ir1Distance-offset1 < ir3Distance-offset3){ //robot is tilted right
       rotateLeft(abs(diffLeft*5), 1);
@@ -414,10 +414,10 @@ void caliLeft2()
   double ir1Distance = getMedianA1();
   double ir2Distance = getMedianA4();
   int count = 0;
-  double diffLeft = (ir1Distance-offset1) - desiredDistanceSensorCaliLeft2;
+  double diffLeft = (ir1Distance-offset1) - desiredDistanceSensorCaliLeft2; //desiredDistanceSensorCaliLeft2 = 8
   double diffRight = (ir2Distance-offset2) - desiredDistanceSensorCaliLeft2;
   
-  while(ir2Distance-offset2 > desiredDistanceSensor ||  ir1Distance-offset1 > desiredDistanceSensor){
+  while(ir2Distance-offset2 > desiredDistanceSensorCaliLeft2 ||  ir1Distance-offset1 > desiredDistanceSensorCaliLeft2){
     //Serial.print("Calibrating...");
     //Serial.println(count+1);
     if (ir1Distance-offset1 > ir2Distance-offset2){ //robot is tilted right
@@ -472,7 +472,7 @@ void calibrateRightwall()
     int count = 0;
     double ir4Distance = getMedianA0()-offset0;
     double ir5Distance = getMedianA2();
-    double diffRight = (ir4Distance) - desiredDistanceSensorforRightwallCali;
+    double diffRight = (ir4Distance) - desiredDistanceSensorforRightwallCali; //desiredDistanceSensorforRightwallCali = 8.44
     double diffLeft = (ir5Distance) - desiredDistanceSensorforRightwallCali;
     double   diffR = (ir4Distance) - desiredDistanceSensorforRightwallCali;
     double   diffL = (ir5Distance) - desiredDistanceSensorforRightwallCali;
