@@ -10,10 +10,10 @@ const int RIGHT_PULSE = 3;     //Pin for right encoder
   float offset1 = 0;                     // Offsets for the front 3 sensors for calibration
   float offset2 = 0;
   float offset3 = 0;
-  double desiredDistanceSensor = 8.8 ; 
+  double desiredDistanceSensor = 10.8 ; 
   double desiredDistanceSensorCaliLeft2 = 8;
-  double desiredDistanceSensorCaliRight2 = 8.5;
-  double desiredDistanceSensorforRightwallCali = 8.44; 
+  double desiredDistanceSensorCaliRight2 = 8;
+  double desiredDistanceSensorforRightwallCali = 9.44; 
   
   
   double tick_R = 0;
@@ -25,12 +25,12 @@ const int RIGHT_PULSE = 3;     //Pin for right encoder
   const double kp2 = 19, ki2 = 5 , kd2 = 0; // PID for above 10 cm 
   PID myPID(&tick_R, &speed_O, &tick_L, kp, ki, kd, REVERSE);
   PID myPID2(&tick_L, &speed_O, &tick_R, kp2, ki2, kd2, DIRECT);
-  int TURN_TICKS_L = 820 ;   // 970 is for checklist // 820 for turning left 90 degree @6.31 volt
-  int TURN_TICKS_R = 815;  //   
+  int TURN_TICKS_L = 820;  // 820 for turning left 90 degree @6.22 volt 
+  int TURN_TICKS_R = 815;  //  815 @ 6.28 //820 @ 6.22
   const int sample = 19;
 
   const int LEFTTICK[18] = {200, 200, 100, 0, 400, 450, 500, 55, 500, 65, 700, 75, 600, 85, 925,0, 730, 500};
-  int Ticks[11] = {570, 1175, 1765, 2380, 2950, 3565, 4155, 4735, 5340, 0,6}; //at speed 300 //calibrate again once added power bank and RPI
+  int Ticks[11] = {555, 1175, 1765, 2380, 2950, 3565, 4155, 4735, 5340, 0,6}; //at speed 300 //calibrate again once added power bank and RPI
 
   
   float RPM1;
@@ -190,7 +190,7 @@ void turnLeft(int angle)
       initializeTick();
       initializeMotor_Start();
       while (tick_R < TURN_TICKS_L || tick_L < TURN_TICKS_L) {
-        if (myPID2.Compute())
+        if (myPID.Compute())
           md.setSpeeds(-(currentSpeed + speed_O), currentSpeed - speed_O);
           double pulse1 = pulseIn(RIGHT_PULSE,HIGH);
           double pulse2 = pulseIn(LEFT_PULSE,HIGH);
@@ -327,21 +327,22 @@ void calibrate()
 //calibrating if the front 3 blocks are wall
 void caliFlat()
 {
-  //offset3 =0.2;
-  //offset2 = 1;
+  
+  offset3 =0;
+  offset2 = 0;
   
   moveBack();
   
-  while(getMedianA3() > 9 || getMedianA4() > 8.9) //too back, need forward
+  while(getMedianA3() > 10.7 || getMedianA4() > 11) //too back, need forward
     moveForward(11); //distance = 11 means tick = 6
-  while((getMedianA3())-offset1 < 9|| (getMedianA4())-offset3 < 8.9)   //bot is too front, need move back
+  while((getMedianA3())-offset1 < 10.7|| (getMedianA4())-offset3 < 11)   //bot is too front, need move back
     moveBack(); 
   delay(50);
   int count = 0;
   double ir1Distance = getMedianA1();
   double ir2Distance = getMedianA4();
   double ir3Distance = getMedianA3();
-  double diffLeft = (ir3Distance-offset1) - desiredDistanceSensor; //dDs = 8.8
+  double diffLeft = (ir2Distance-offset2) - desiredDistanceSensor; //dDs = 10.8
   double diffRight = (ir2Distance+offset3) - desiredDistanceSensor; 
   
   while(ir2Distance-offset2 > desiredDistanceSensor || ir3Distance-offset3 > desiredDistanceSensor){ //may need the ir number
@@ -367,27 +368,28 @@ void caliFlat()
 
 void caliRight2()
 {
-  offset3 = 1;
+  offset3 = 2.5;
+  offset1 = 0;
   
-  while( (getMedianA3() > 9.3 )  ){
+  while( (getMedianA3() > 10.7 )  ){
       moveForward(11);
     }
-  while(getMedianA3() < 9.3 || getMedianA1()-offset1 < 7.84)        // Move back to desire distance
+  while(getMedianA3() < 10.7 || getMedianA1()-offset1 < 7.84)        // Move back to desire distance
     moveBack(); 
   delay(50);
   double ir1Distance = getMedianA1();
   double ir3Distance = getMedianA3();
   int count = 0;
-  double diffRight = (ir1Distance+offset1) - desiredDistanceSensorCaliRight2;
+  double diffRight = (ir1Distance) - desiredDistanceSensorCaliRight2;
   double diffLeft = (ir3Distance-offset3) - desiredDistanceSensorCaliRight2;
   
-  while(ir1Distance-offset1 > desiredDistanceSensorCaliRight2 ||  ir3Distance-offset3 > desiredDistanceSensorCaliRight2){ //desiredDistanceSensorCaliRight2 = 8.5
+  while(ir1Distance > desiredDistanceSensorCaliRight2 ||  ir3Distance-offset3 > desiredDistanceSensorCaliRight2){ //desiredDistanceSensorCaliRight2 = 8
     
-    if (ir1Distance-offset1 < ir3Distance-offset3){ //robot is tilted right
-      rotateLeft(abs(diffLeft*5), 1);
+    if (ir1Distance < ir3Distance-offset3){ //robot is tilted right
+      rotateLeft(abs(diffLeft*3), 1);
     }
     else if ( ir3Distance-offset3 < ir1Distance-offset1) { //robot is tilted left 
-      rotateRight(abs(diffRight*5), 1);
+      rotateRight(abs(diffRight*3), 1);
     }
     count++;
     if (count >= 17)
@@ -403,12 +405,12 @@ void caliRight2()
 void caliLeft2()
 {
   //offset1 = 1;
-  offset2 = 1;
+  offset2 = 3;
 
   
-  while(  (getMedianA4() > 8.9) )
+  while(  (getMedianA4() > 11) )
      moveForward(11);
-  while(  getMedianA1() < 7.84  || getMedianA4() < 8.9 )        // Move back to desire distance
+  while(  getMedianA1() < 7.84  || getMedianA4() < 11 )        // Move back to desire distance
     moveBack(); 
   delay(50);
   double ir1Distance = getMedianA1();
@@ -468,14 +470,18 @@ void rotateLeft(int distance, int direct)
 //for checklist: straightline motion
 void calibrateRightwall()
 {
-    float offset0 = 0.5;
+    float offset0 = 0;
     int count = 0;
     double ir4Distance = getMedianA0()-offset0;
     double ir5Distance = getMedianA2();
-    double diffRight = (ir4Distance) - desiredDistanceSensorforRightwallCali; //desiredDistanceSensorforRightwallCali = 8.44
+    double diffRight = (ir4Distance) - desiredDistanceSensorforRightwallCali; //desiredDistanceSensorforRightwallCali = 9.44
     double diffLeft = (ir5Distance) - desiredDistanceSensorforRightwallCali;
     double   diffR = (ir4Distance) - desiredDistanceSensorforRightwallCali;
     double   diffL = (ir5Distance) - desiredDistanceSensorforRightwallCali;
+
+
+
+ if( abs(ir4Distance - ir5Distance ) > 0.5){
   
   if(ir5Distance> ir4Distance)//this mean, the bot is tilted at the right, need rotate left to correct
   {
@@ -496,13 +502,13 @@ void calibrateRightwall()
        diffR = (ir4Distance) - desiredDistanceSensorforRightwallCali;
        diffL = (ir5Distance) - desiredDistanceSensorforRightwallCali;
     }
-    if(ir4Distance < desiredDistanceSensorforRightwallCali ||   ir5Distance < desiredDistanceSensorforRightwallCali) 
+    /*if(ir4Distance < desiredDistanceSensorforRightwallCali ||   ir5Distance < desiredDistanceSensorforRightwallCali) 
     //bot is straight but too close to wall, need compensate
     {
       diffLeft = ir4Distance - desiredDistanceSensorforRightwallCali;
       //may need to a loop
       rotateLeft(abs(diffLeft*2), 1);
-    }
+    }*/
     
   }
   
@@ -524,17 +530,17 @@ void calibrateRightwall()
         break;}
       }
 
-      if(ir4Distance > desiredDistanceSensorforRightwallCali ||   ir5Distance > desiredDistanceSensorforRightwallCali) 
+     /* if(ir4Distance > desiredDistanceSensorforRightwallCali ||   ir5Distance > desiredDistanceSensorforRightwallCali) 
     //bot is straight but too far from right wall, need compensate
     {
       diffRight = ir4Distance - desiredDistanceSensorforRightwallCali;
       //may need to a loop
       rotateRight(abs(diffRight*2), 1);
     }
-
+      */
     }
     
-   
+ }
 
   delay(50);
 }
@@ -561,7 +567,7 @@ void AvoidFrontObstacle(int distance){
           //if(    ir2GetGrid(getMedianA4()) == 0   ){ //obstacle on the left
               turnLeft(90);
               delay(5000);
-              moveForward(3);
+              moveForward(2);
               delay(5000);
               turnRight(90);
               delay(5000);
@@ -569,53 +575,27 @@ void AvoidFrontObstacle(int distance){
               delay(5000);
               turnRight(90);
               delay(5000);
-              moveForward(3);
-              calibrate();
+              moveForward(2);
+              //calibrate();
               
               turnLeft(90);
               delay(5000);
-              calibrate();
-              break;
+              //calibrate();
+              
               
           
-         // }
+         }
   
-          /*else if(   ((ir3Distance < 15) && (ir3Distance > 0)) || ((ir1Distance < 15) && (ir1Distance > 0))   ) { //obstacle on the right 
-  
-            //take evasive action 
-            turnLeft(90);
-             delay(5000);
-            moveForward(2);
-             delay(1000);
-            turnRight(90);
-             delay(5000);
-            moveForward(5);
-             delay(1000);
-            turnRight(90);
-             delay(5000);
-            moveForward(2);
-            caliFlat();
-          
-            turnLeft(90);
-            delay(5000);
-            calibrateRightwall();
-            
-          }
-  
-          count = count +5;
-
-        
-      }
+      
       else{
         moveForward(1);//moveforward by 10cm
         count++; 
       }
-*/
+
       
     
   }
 
   
   
-}
 }

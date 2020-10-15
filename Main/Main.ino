@@ -13,7 +13,7 @@ void setup()
 void loop() 
 {
 
-/*
+
 if(Serial.available()>0){
 String data= Serial.readStringUntil('\n');
 Serial.println("Ardiuno receieved  " + data);
@@ -24,17 +24,20 @@ Serial.println("length of data received");
 Serial.println(dataLength);
 int i;
 
-int gridValue=1;
+//int gridValue=1;
+int gridValue;
 if(dataLength>1){
   for(i=0;i<dataLength;i++){
       current=dataBuffer[i];
 
       switch(current){
       case 'A': 
-              //int gridValue = int(command[i+1]) - 48;
-              //i++;
-              //Serial.print("gridValue = ");
-              //Serial.println(gridValue); 
+              Serial.print("command = ");
+              Serial.println(int(dataBuffer[i+1]));
+              gridValue = int(dataBuffer[i+1]) - 48;
+              i++;
+              Serial.print("gridValue = ");
+              Serial.println(gridValue); 
               moveForward((int)gridValue);
               
                                
@@ -61,7 +64,6 @@ if(dataLength>1){
    
 }
 
-*/
 
 //moveForward(9); //drain battery
 //  md.setSpeeds(400,400);// // L//R//default right wheel is faster
@@ -72,31 +74,28 @@ if(dataLength>1){
 //turnLeft(90);
 //turnRight(90);
 
-//AvoidFrontObstacle(15);
+//AvoidFrontObstacle(10);
 
-
-
-//getMedianA0();
-//getMedianA2();
-  /*getMedianA1();
+/*
+getMedianA0();
+getMedianA2();
+  getMedianA1();
   getMedianA3();
-  getMedianA4();*/
-  //getMedianA5();
-
- /* ir2GetGrid(getMedianA4());
+  getMedianA4();
+  getMedianA5(); */
+  /*ir2GetGrid(getMedianA4());
   ir1GetGrid(getMedianA1());
-  ir3GetGrid(getMedianA3());*/
+  ir3GetGrid(getMedianA3());  */
   //ir4GetGrid(getMedianA0());
   //ir5GetGrid(getMedianA2());
   //ir6GetGrid(getMedianA5());
 
-calibrate();
+//calibrate();
 //turnLeft(90);
+//turnRight(90);
 //caliLeft2();
 //caliRIght2();
-//calibrateRightwall();
-  
-delay(5000);
+//delay(5000);
   
 
  

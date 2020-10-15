@@ -166,15 +166,15 @@ int ir1GetGrid(double range)
 
 int ir2GetGrid(double range) 
 { //used to get grid for A4 (front left)
-  if ( range >= 7 && range <= 12.4)
-  { Serial.println("1");
+  if ( range >= 7 && range <= 14.5)
+  { Serial.println("0");
   return 0;
   }  
- if ( range >= 12.4 && range <= 23.3)
+ if ( range >= 14.5 && range <= 25)
   { Serial.println("1");
     return 1;
   }
-  else if ( range > 23.3 && range <= 34.5) {
+  else if ( range > 25 && range <= 34.5) {
     Serial.println("2");
     return 2;
 
@@ -188,15 +188,15 @@ int ir2GetGrid(double range)
 
 int ir3GetGrid(double range) 
 { //used to get grid for A3 (front right)
-   if ( range >= 7 && range <= 12.5)
-  { Serial.println("1");
+   if ( range >= 7 && range <= 15)
+  { Serial.println("0");
   return 0;
-  }  if ( range >= 12.5 && range <=23.3) {
+  }  if ( range >= 15 && range <=25) {
     Serial.println("1");
     return 1;
 
   }
-  else if ( range > 23.3 && range <= 32)
+  else if ( range > 25 && range <= 32)
   { Serial.println("2");
     return 2;
 
