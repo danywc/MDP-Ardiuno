@@ -258,6 +258,46 @@ int ir5GetGrid(double range)
 
 int ir6GetGrid(double range) 
 {
+  if (range >= 18 && range <= 24  )
+  { Serial.println("0");
+    return 0;
+
+  }
+
+
+   else if (range >= 25 && range <= 33  )
+  { Serial.println("1");
+    return 1;
+
+  }
+
+   else if (range >= 34 && range <=  45 )
+  { Serial.println("2");
+    return 2;
+
+  }
+
+  else if (range >= 46 && range <=  55 )
+  { Serial.println("3");
+    return 3;
+
+  }
+
+  else if (range >= 56 && range <=  65 )
+  { Serial.println("4");
+    return 4;
+
+  }
+
+else {
+    Serial.println("-1");
+    return -1;
+  }
+
+
+/*  
+
+  //original placement of LR sensor
   if (range >= 27 && range <= 35 )
   { Serial.println("2");
     return 2;
@@ -293,7 +333,11 @@ int ir6GetGrid(double range)
     return -1;
   }
 
+  */
+
 }
+
+
 
 void readAllSensors() 
 {

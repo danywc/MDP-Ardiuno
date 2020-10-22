@@ -1,3 +1,4 @@
+
 #include "DualVNH5019MotorShield.h"
 #include "PID_v1.h"
 #include "EnableInterrupt.h"
@@ -25,7 +26,7 @@ const int RIGHT_PULSE = 3;     //Pin for right encoder
   const double kp2 = 19, ki2 = 5 , kd2 = 0; // PID for above 10 cm 
   PID myPID(&tick_R, &speed_O, &tick_L, kp, ki, kd, REVERSE);
   PID myPID2(&tick_L, &speed_O, &tick_R, kp2, ki2, kd2, DIRECT);
-  int TURN_TICKS_L = 820;  // 820 for turning left 90 degree @6.22 volt 
+  int TURN_TICKS_L = 815;  // 820 for turning left 90 degree @6.22 volt 
   int TURN_TICKS_R = 815;  //  815 @ 6.28 //820 @ 6.22
   const int sample = 19;
 
@@ -368,7 +369,7 @@ void caliFlat()
 
 void caliRight2()
 {
-  offset3 = 2.5;
+  offset3 = 2.8;
   offset1 = 0;
   
   while( (getMedianA3() > 10.7 )  ){
@@ -404,7 +405,7 @@ void caliRight2()
 
 void caliLeft2()
 {
-  //offset1 = 1;
+  
   offset2 = 3;
 
   

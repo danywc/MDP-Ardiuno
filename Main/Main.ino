@@ -64,7 +64,8 @@ if(dataLength>1){
    
 }
 
-
+//Serial.println(analogRead(analogPin2));
+//delay(1000);
 //moveForward(9); //drain battery
 //  md.setSpeeds(400,400);// // L//R//default right wheel is faster
 
@@ -76,13 +77,13 @@ if(dataLength>1){
 
 //AvoidFrontObstacle(10);
 
-/*
-getMedianA0();
+
+/*getMedianA0();
 getMedianA2();
   getMedianA1();
   getMedianA3();
-  getMedianA4();
-  getMedianA5(); */
+  getMedianA4();*/
+  //getMedianA5(); 
   /*ir2GetGrid(getMedianA4());
   ir1GetGrid(getMedianA1());
   ir3GetGrid(getMedianA3());  */
